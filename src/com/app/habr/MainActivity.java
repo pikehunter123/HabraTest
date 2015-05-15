@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
+
 import android.app.Activity;
 import android.app.Notification;
 import android.appwidget.AppWidgetManager;
@@ -159,9 +160,9 @@ public class MainActivity extends Activity {
          new DownloadImageTask(tTemper)
          .execute("https://pogoda.yandex.ru/moscow/");
          
-         int duration = Toast.LENGTH_SHORT;
+         /*int duration = Toast.LENGTH_SHORT;
          Toast toast = Toast.makeText(getApplicationContext(), "yohoho", duration);
-         toast.show();
+         toast.show();*/
          
       // Выберите графический объект, который будет отображаться в качестве
       // значка в статусной строке
