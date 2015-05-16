@@ -15,12 +15,12 @@ public class DownloadImageTask extends AsyncTask<String, Void, Integer> {
     	 my.pack.Point p = my.pack.WebDataReciver.getWeather(urls[0]);
   		int temp = p.x;
   		int press = p.y;
-  		System.out.println("-----**"+temp+" "+press);
+  		//System.out.println("-----**"+temp+" "+press);
            //bashtemp = GetTemper("http://be.bashkirenergo.ru/weather/ufa/");
           // отображение температуры /*catch (Exception e) {
          //   Log.e("Error", e.getMessage());
          //   e.printStackTrace();     
-  		Log.i(DownloadImageTask.class.getName(), "returned"+temp+" "+press );
+  		Log.i(DownloadImageTask.class.getName(), "-------returned"+temp+" "+press );
   		
         return press;
     }

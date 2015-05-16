@@ -51,20 +51,20 @@ public class WebDataReciver {
 			}
 			
 			// работаем с регулярками
-			System.out.println("---"+allpage.toString());
+			//System.out.println("---"+allpage.toString());
 			//String patt_temp = "<div\\s+class=\"current-weather__thermometer current-weather__thermometer_type_now\"\\s*>[^&]{1,}";
 			String patt_temp = "current-weather__condition-icon\"\\s+data-width=\"46\"></i>[^&]{1,}";
 			//<i class="icon icon_size_46 icon_thumb_skc-n current-weather__condition-icon" data-width="46"></i>
 			String stemp = tryMatch(allpage, patt_temp);
 			stemp=stemp.split(">", 3)[2].replace("+", "");
 			if (stemp!=null) matchtemper = Integer.parseInt(stemp);
-			System.out.println("t---" + matchtemper);
+			///System.out.println("t---" + matchtemper);
 			
 			String patt_press = "Давление:\\s+[^<]{1,}";
 			String spress = tryMatch(allpage, patt_press).trim();
-			System.out.println("p---" + spress);
+			///System.out.println("p---" + spress);
 			Integer pressure= Integer.parseInt(spress.split(" ")[1]);
-			System.out.println("---" + pressure);
+			//System.out.println("---" + pressure);
 			
 			/*String patt_raise = "Восход:\\s*</span>[^<]*";
 			String sraise = tryMatch(allpage, patt_raise);

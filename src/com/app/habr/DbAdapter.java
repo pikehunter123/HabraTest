@@ -17,7 +17,7 @@ public class DbAdapter {
 	private static final String DATABASE_TABLE = "pTable";
 	private static final String TABLE_CREATE =
 	"create table IF NOT EXISTS  " + DATABASE_TABLE + " ( _id integer primary key	autoincrement," +
-	"_time NUMERIC not null, pressure text not null);";
+	"_time NUMERIC not null, pressure NUMERIC not null);";
 	private static final String TABLE_DROP =
 			"drop table IF EXISTS " + DATABASE_TABLE+";";
 	SQLiteDatabase myDatabase;
@@ -48,19 +48,19 @@ public class DbAdapter {
 	myDatabase.insert(DATABASE_TABLE, null, newValues);
 	}
 
-	public List<Integer> getValue() {
+	public List<Integer> getValues(int length) {
 		// Возвращает все строки для первого и третьего столбца, без повторений
 		String[] result_columns = new String[] {"_id","_time", "pressure"};
-		Cursor allRows = myDatabase.query(true, DATABASE_TABLE, result_columns,	null, null, null, null, null, null);
+		Cursor allRows = myDatabase.query(DATABASE_TABLE, result_columns,	" _ID >= (SELECT MAX(_ID)  FROM "+DATABASE_TABLE+")+1-"+length, null, null, null, null, null);
 		ArrayList<Integer> l = new ArrayList<Integer>();
 		if (allRows.moveToFirst()) {
 			// Пройдитесь по каждой строке.
 			do {
 				Integer s0 = allRows.getInt(0);
 				Long s1 = allRows.getLong(1);
-				String s2 = allRows.getString(2);
+				int s2 = allRows.getInt(2);
 				Log.i(DbAdapter.class.getName(), "readed "+s0+" "+s1+" "+s2);
-				l.add(746);
+				l.add(s2);
 			} while(allRows.moveToNext());
 			}
 		return l;

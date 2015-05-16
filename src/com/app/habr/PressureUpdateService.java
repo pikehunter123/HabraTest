@@ -87,7 +87,10 @@ public class PressureUpdateService extends Service {
 	public void returnPressure(Integer p) {
 		Log.i(PressureUpdateService.class.getName(), "returnPressure  p=" + p);
 		db.insValue(p);
-		List<Integer> ll = db.getValue();
+		List<Integer> ll = db.getValues(10);
+		for (Integer i : ll) {
+			Log.i(PressureUpdateService.class.getName(), "rr "+i);
+		}
 	}
 
 	private void newPressure() {
