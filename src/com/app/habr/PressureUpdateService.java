@@ -15,25 +15,31 @@ public class PressureUpdateService extends Service {
 	private Timer updateTimer;
 	int i = 0;
 
-	private TimerTask doRefresh = new TimerTask() {
-		public void run() {
-			Log.i(PressureUpdateService.class.getName(), "timer tik tak "+ (i++));
-		}
-	};
+	private TimerTask doRefresh=null;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.i(PressureUpdateService.class.getName(),
-				"*****************************onStartCommand timer tik tak ");
+		Log.i(PressureUpdateService.class.getName(),"*****************************onStartCommand timer tik tak ");
+		
+		doRefresh = new TimerTask() {
+			public void run() {
+				Log.i(PressureUpdateService.class.getName(), "timer tik tak "
+						+ (i++));
+			}
+		};
 		// Получите Общие настройки
 		/*
 		 * SharedPreferences prefs =
 		 * getSharedPreferences(Preferences.USER_PREFERENCE
 		 * ,Activity.MODE_PRIVATE);
 		 */
-		if (true) {
-			updateTimer = new Timer("earthquakeUpdates");
-			updateTimer.scheduleAtFixedRate(doRefresh, 0, 1 * 5 * 1000);
+		
+		if (updateTimer==null)
+		try {
+		Log.i(PressureUpdateService.class.getName(),"***create task");
+		updateTimer = new Timer("earthquakeUpdates");
+		updateTimer.scheduleAtFixedRate(doRefresh, 0, 1 * 5 * 1000);
+		} catch (Exception e) {
 		}
 		// else
 		// refreshEarthquakes();
@@ -55,8 +61,11 @@ public class PressureUpdateService extends Service {
 		super.onDestroy();
 		Log.i(PressureUpdateService.class.getName(), "onDestroy");
 		if (updateTimer != null) {
+			doRefresh.cancel();
+			updateTimer.purge();
 			updateTimer.cancel();
 			Log.i(PressureUpdateService.class.getName(), "timer cancel");
+			updateTimer=null;
 		}
 	}
 
