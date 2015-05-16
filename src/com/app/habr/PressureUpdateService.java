@@ -6,25 +6,40 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.TextView;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class PressureUpdateService extends Service {
 
+	DbAdapter db = null;
+
+	public PressureUpdateService() {
+		super();
+
+	}
+
 	private Timer updateTimer;
 	int i = 0;
 
-	private TimerTask doRefresh=null;
+	private TimerTask doRefresh = null;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.i(PressureUpdateService.class.getName(),"*****************************onStartCommand timer tik tak ");
-		
+		if (db == null) {
+			db = new DbAdapter();
+			db.createDatabase(getApplicationContext());
+		}
+		Log.i(PressureUpdateService.class.getName(),
+				"*****************************onStartCommand timer tik tak ");
+
 		doRefresh = new TimerTask() {
 			public void run() {
 				Log.i(PressureUpdateService.class.getName(), "timer tik tak "
 						+ (i++));
+				newPressure();
 			}
 		};
 		// Получите Общие настройки
@@ -33,14 +48,14 @@ public class PressureUpdateService extends Service {
 		 * getSharedPreferences(Preferences.USER_PREFERENCE
 		 * ,Activity.MODE_PRIVATE);
 		 */
-		
-		if (updateTimer==null)
-		try {
-		Log.i(PressureUpdateService.class.getName(),"***create task");
-		updateTimer = new Timer("earthquakeUpdates");
-		updateTimer.scheduleAtFixedRate(doRefresh, 0, 1 * 5 * 1000);
-		} catch (Exception e) {
-		}
+
+		if (updateTimer == null)
+			try {
+				Log.i(PressureUpdateService.class.getName(), "***create task");
+				updateTimer = new Timer("earthquakeUpdates");
+				updateTimer.scheduleAtFixedRate(doRefresh, 0, 1 * 5 * 1000);
+			} catch (Exception e) {
+			}
 		// else
 		// refreshEarthquakes();
 		return Service.START_STICKY;
@@ -65,8 +80,20 @@ public class PressureUpdateService extends Service {
 			updateTimer.purge();
 			updateTimer.cancel();
 			Log.i(PressureUpdateService.class.getName(), "timer cancel");
-			updateTimer=null;
+			updateTimer = null;
 		}
+	}
+
+	public void returnPressure(Integer p) {
+		Log.i(PressureUpdateService.class.getName(), "returnPressure  p=" + p);
+		db.insValue(p);
+		List<Integer> ll = db.getValue();
+	}
+
+	private void newPressure() {
+
+		final TextView tTemper = null;// (TextView) findViewById(R.id.temper);
+		new DownloadImageTask(this).execute("https://pogoda.yandex.ru/moscow/");
 	}
 
 }

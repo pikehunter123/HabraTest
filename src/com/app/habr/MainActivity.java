@@ -150,7 +150,7 @@ public class MainActivity extends Activity {
     //----------------------------------------------------------------
     public void RefreshTemper()
     {
-    	DbAdapter dbb = new DbAdapter();
+    	/*DbAdapter dbb = new DbAdapter();
     	dbb.createDatabase(getApplicationContext() );
     	dbb.insValue(getApplicationContext());
     	dbb.getValue(getApplicationContext());
@@ -159,7 +159,7 @@ public class MainActivity extends Activity {
          String bashtemp = "";
          new DownloadImageTask(tTemper)
          .execute("https://pogoda.yandex.ru/moscow/");
-         
+         */
          /*int duration = Toast.LENGTH_SHORT;
          Toast toast = Toast.makeText(getApplicationContext(), "yohoho", duration);
          toast.show();*/

@@ -1,5 +1,8 @@
 package com.app.habr;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
@@ -18,8 +21,10 @@ public class DbAdapter {
 	private static final String TABLE_DROP =
 			"drop table IF EXISTS " + DATABASE_TABLE+";";
 	SQLiteDatabase myDatabase;
+	private Context ctx;
 	
 	public void createDatabase(Context ctx) {
+	this.ctx=ctx;	
 	Log.i(DbAdapter.class.getName(), "Creating database ***********************");
 	myDatabase = ctx.openOrCreateDatabase(DATABASE_NAME, Context.MODE_PRIVATE,null);
 	try{
@@ -31,27 +36,23 @@ public class DbAdapter {
 	
 	}
 	
-	public void insValue(Context ctx){
+	public void insValue(int press){
 		
 		
 	// Создайте новую строку со значениями для вставки.
 	ContentValues newValues = new ContentValues();
 	// Задайте значения для каждой строки.
 	newValues.put("_time", System.currentTimeMillis());
-	newValues.put("pressure", "221");
+	newValues.put("pressure", press);
 		// Вставьте строку в вашу базу данных.
 	myDatabase.insert(DATABASE_TABLE, null, newValues);
-	newValues.put("_time", System.currentTimeMillis());
-	newValues.put("pressure", "2ssssssss21");
-		myDatabase.insert(DATABASE_TABLE, null, newValues);
-	
-	
 	}
 
-	public void getValue(Context applicationContext) {
+	public List<Integer> getValue() {
 		// Возвращает все строки для первого и третьего столбца, без повторений
 		String[] result_columns = new String[] {"_id","_time", "pressure"};
 		Cursor allRows = myDatabase.query(true, DATABASE_TABLE, result_columns,	null, null, null, null, null, null);
+		ArrayList<Integer> l = new ArrayList<Integer>();
 		if (allRows.moveToFirst()) {
 			// Пройдитесь по каждой строке.
 			do {
@@ -59,9 +60,10 @@ public class DbAdapter {
 				Long s1 = allRows.getLong(1);
 				String s2 = allRows.getString(2);
 				Log.i(DbAdapter.class.getName(), "readed "+s0+" "+s1+" "+s2);
+				l.add(746);
 			} while(allRows.moveToNext());
 			}
-		
+		return l;
 	}
 	
 }

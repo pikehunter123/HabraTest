@@ -4,14 +4,14 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
 
-public class DownloadImageTask extends AsyncTask<String, Void, String> {
-	TextView tx;
+public class DownloadImageTask extends AsyncTask<String, Void, Integer> {
+	PressureUpdateService s;
 
-    public DownloadImageTask(TextView tx) {
-        this.tx = tx;
+    public DownloadImageTask(PressureUpdateService s) {
+        this.s = s;
     }
 
-    protected String doInBackground(String... urls) {
+    protected Integer doInBackground(String... urls) {
     	 my.pack.Point p = my.pack.WebDataReciver.getWeather(urls[0]);
   		int temp = p.x;
   		int press = p.y;
@@ -22,11 +22,11 @@ public class DownloadImageTask extends AsyncTask<String, Void, String> {
          //   e.printStackTrace();     
   		Log.i(DownloadImageTask.class.getName(), "returned"+temp+" "+press );
   		
-        return temp+" "+press;
+        return press;
     }
 
-    protected void onPostExecute(String result) {
-        tx.setText(result);
+    protected void onPostExecute(Integer result) {
+        s.returnPressure(result);
     }
 
 	
