@@ -1,6 +1,7 @@
 package com.app.habr;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.app.Application;
@@ -48,19 +49,19 @@ public class DbAdapter {
 	myDatabase.insert(DATABASE_TABLE, null, newValues);
 	}
 
-	public List<Integer> getValues(int length) {
+	public List<ResultP> getValues(int length) {
 		// Возвращает все строки для первого и третьего столбца, без повторений
 		String[] result_columns = new String[] {"_id","_time", "pressure"};
 		Cursor allRows = myDatabase.query(DATABASE_TABLE, result_columns,	" _ID >= (SELECT MAX(_ID)  FROM "+DATABASE_TABLE+")+1-"+length, null, null, null, null, null);
-		ArrayList<Integer> l = new ArrayList<Integer>();
+		ArrayList<ResultP> l = new ArrayList<ResultP>();
 		if (allRows.moveToFirst()) {
 			// Пройдитесь по каждой строке.
 			do {
-				Integer s0 = allRows.getInt(0);
-				Long s1 = allRows.getLong(1);
-				int s2 = allRows.getInt(2);
-				Log.i(DbAdapter.class.getName(), "readed "+s0+" "+s1+" "+s2);
-				l.add(s2);
+				int id = allRows.getInt(0);
+				Long tt = allRows.getLong(1);
+				int p = allRows.getInt(2);
+				Log.i(DbAdapter.class.getName(), "readed "+id+" "+tt+" "+p);				
+				l.add(new ResultP(id, new Date(tt), p, 0));
 			} while(allRows.moveToNext());
 			}
 		return l;

@@ -2,10 +2,14 @@ package com.app.habr;
 
 import android.app.Activity;
 import android.app.Service;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import java.util.List;
@@ -25,12 +29,14 @@ public class PressureUpdateService extends Service {
 	int i = 0;
 
 	private TimerTask doRefresh = null;
+	private Context ctx = null;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if (db == null) {
+			ctx = getApplicationContext();
 			db = new DbAdapter();
-			db.createDatabase(getApplicationContext());
+			db.createDatabase(ctx);
 		}
 		Log.i(PressureUpdateService.class.getName(),
 				"*****************************onStartCommand timer tik tak ");
@@ -85,11 +91,28 @@ public class PressureUpdateService extends Service {
 	}
 
 	public void returnPressure(Integer p) {
+		String s="";
 		Log.i(PressureUpdateService.class.getName(), "returnPressure  p=" + p);
 		db.insValue(p);
-		List<Integer> ll = db.getValues(10);
-		for (Integer i : ll) {
-			Log.i(PressureUpdateService.class.getName(), "rr "+i);
+		List<ResultP> ll = db.getValues(10);
+		for (ResultP r : ll) {
+			Log.i(PressureUpdateService.class.getName(), "rr " + r.getDate()
+					+ " " + r.getPress());
+			s=r.getDate().toString();
+			
+		}
+
+		// Получите экземпляр AppWidgetManager.
+		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(ctx);
+		// Получите идентификаторы каждого экземпляра выбранного виджета.
+		ComponentName thisWidget = new ComponentName(ctx, MyAppWidget.class);
+		int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+		for (int i = 0; i < appWidgetIds.length; i++) {
+			int appWidgetId = appWidgetIds[i];
+			RemoteViews views = new RemoteViews(ctx.getPackageName(),
+					R.layout.pressure_widget);
+			views.setTextViewText(R.id.widget_text, s);
+			appWidgetManager.updateAppWidget(appWidgetId, views);
 		}
 	}
 

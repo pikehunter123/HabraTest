@@ -13,7 +13,7 @@ public class MyAppWidget extends AppWidgetProvider {
 	//context.sendBroadcast(new Intent("com.paad.chapter9.FORCE_WIDGET_UPDATE"));
 	@Override
 	public void onReceive(Context context, Intent intent) {
-	super.onReceive(context, intent);
+	/*super.onReceive(context, intent);
 	if (FORCE_WIDGET_UPDATE.equals(intent.getAction())) {
 		Log.i(MyAppWidget.class.getName(), " **********************update by receive call ");
 		// Получите экземпляр AppWidgetManager.
@@ -22,7 +22,7 @@ public class MyAppWidget extends AppWidgetProvider {
 		ComponentName thisWidget = new ComponentName(context, MyAppWidget.class);
 		int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 	// TODO Обновить пользовательский интерфейс виджета.
-	}
+	}*/
 	}
 	
 @Override
@@ -32,7 +32,7 @@ int[] appWidgetIds) {
 
 	
 	Log.i(MyAppWidget.class.getName(), " **********************update call ");
-	final int N = appWidgetIds.length;
+/*	final int N = appWidgetIds.length;
 	for (int i = 0; i < N; i++) {
 	int appWidgetId = appWidgetIds[i];
 	// Создайте новый объект RemoveViews
@@ -43,7 +43,7 @@ int[] appWidgetIds) {
 	// Обновите виджет с помощью AppWidgetManager, используя
 	// измененный объект RemoveViews.
 	appWidgetManager.updateAppWidget(appWidgetId, views);
-	}
+	}*/
 // TODO Обновить пользовательский интерфейс виджета.
 }
 }

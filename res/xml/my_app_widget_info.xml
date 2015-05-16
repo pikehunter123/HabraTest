@@ -2,8 +2,8 @@
 <appwidget-provider
 xmlns:android="http://schemas.android.com/apk/res/android"
 android:initialLayout="@layout/pressure_widget"
-android:minWidth="146dp"
-android:minHeight="146dp"
-android:label="My App Widget"
+android:minWidth="145dp"
+android:minHeight="45dp"
+android:label="PressureWidget"
 android:updatePeriodMillis="3600000"
 />
