@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.IBinder;
 import android.support.v4.graphics.BitmapCompat;
 import android.util.Log;
@@ -114,8 +116,17 @@ public class PressureUpdateService extends Service {
 			RemoteViews views = new RemoteViews(ctx.getPackageName(),
 					R.layout.pressure_widget);
 			views.setTextViewText(R.id.widget_text, s);
-			Bitmap bitmap = new Bitmap();
-			views.setImageViewBitmap(R.id.widget_image, bitmap);
+
+			// Конвертируем Drawable в Bitmap
+			Bitmap mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.applogo);
+			///mBitmap.
+			int mPhotoWidth = mBitmap.getWidth();
+			int mPhotoHeight = mBitmap.getHeight();
+			Log.i(PressureUpdateService.class.getName(), "bitmap"+mPhotoWidth+"*"+mPhotoHeight);
+			mBitmap.setPixel(1, 1,Color.RED );
+			mBitmap.setPixel(1, 2,Color.RED );
+			mBitmap.setPixel(1, 3,Color.RED );
+			views.setImageViewBitmap(R.id.widget_image, mBitmap);
 			appWidgetManager.updateAppWidget(appWidgetId, views);
 		}
 	}
