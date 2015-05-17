@@ -1,4 +1,4 @@
-package com.app.habr;
+package my.android;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;

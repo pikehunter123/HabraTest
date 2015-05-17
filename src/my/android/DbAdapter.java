@@ -1,4 +1,4 @@
-package com.app.habr;
+package my.android;
 
 import java.util.ArrayList;
 import java.util.Date;

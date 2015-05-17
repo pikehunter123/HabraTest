@@ -3,22 +3,27 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="horizontal"
-    android:padding="10sp" >
+    android:padding="10sp"
+   
+   >
 
     <ImageView
         android:id="@+id/widget_image"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:src="@drawable/applogo" />
+        android:src="@drawable/pattern" />
 
     <TextView
         android:id="@+id/widget_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="3dip"
-        android:padding="1dip"
-        android:text="abc..."
-        android:textSize="3dp" />
+        android:text="pressure widget"
+        android:textSize="9dp"
+        android:textColor="@color/black"
+         />
+    <!-- android:layout_marginBottom="3dip"
+        android:padding="1dip"        
+         -->
 
 </FrameLayout>

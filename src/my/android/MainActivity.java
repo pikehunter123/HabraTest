@@ -1,10 +1,16 @@
-package com.app.habr;
+package my.android;
 
 
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
+
+
+import my.android.R;
+import my.android.R.id;
+import my.android.R.layout;
+import my.android.R.menu;
 
 import android.app.Activity;
 import android.app.Notification;

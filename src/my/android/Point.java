@@ -1,4 +1,4 @@
-package my.pack;
+package my.android;
 
 public class Point {
 	public Point(int i, int j) {

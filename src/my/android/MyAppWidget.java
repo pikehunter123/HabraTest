@@ -1,4 +1,4 @@
-package com.app.habr;
+package my.android;
 
 
 import android.appwidget.AppWidgetManager;

@@ -1,4 +1,4 @@
-package my.pack;
+package my.android;
 
 //import java.awt.Point;
 import java.io.InputStream;

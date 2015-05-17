@@ -1,5 +1,6 @@
-package com.app.habr;
+package my.android;
 
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
@@ -12,7 +13,8 @@ public class DownloadImageTask extends AsyncTask<String, Void, Integer> {
     }
 
     protected Integer doInBackground(String... urls) {
-    	 my.pack.Point p = my.pack.WebDataReciver.getWeather(urls[0]);
+    	//if (NetworkInfo.isRoaming()) return
+    	 my.android.Point p = my.android.WebDataReciver.getWeather(urls[0]);
   		int temp = p.x;
   		int press = p.y;
   		//System.out.println("-----**"+temp+" "+press);
