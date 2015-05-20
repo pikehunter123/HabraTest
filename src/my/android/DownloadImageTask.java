@@ -22,7 +22,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Integer> {
           // отображение температуры /*catch (Exception e) {
          //   Log.e("Error", e.getMessage());
          //   e.printStackTrace();     
-  		Log.i(DownloadImageTask.class.getName(), "-------returned"+temp+" "+press );
+  		Log.d(DownloadImageTask.class.getName(), "-------returned"+temp+" "+press );
   		
         return press;
     }

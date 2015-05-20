@@ -26,20 +26,18 @@ public class DbAdapter {
 	
 	public void createDatabase(Context ctx) {
 	this.ctx=ctx;	
-	Log.i(DbAdapter.class.getName(), "Creating database ***********************");
+	Log.d(DbAdapter.class.getName(), "Creating database ***********************");
 	myDatabase = ctx.openOrCreateDatabase(DATABASE_NAME, Context.MODE_PRIVATE,null);
 	try{
 	//myDatabase.execSQL(TABLE_DROP);
 	
 	myDatabase.execSQL(TABLE_CREATE);
 	}catch (SQLiteException ex){}
-	Log.i(DbAdapter.class.getName(), "Created database ***********************");
+	Log.d(DbAdapter.class.getName(), "Created database ***********************");
 	
 	}
 	
-	public void insValue(int press){
-		
-		
+	public void insValue(int press){		
 	// Создайте новую строку со значениями для вставки.
 	ContentValues newValues = new ContentValues();
 	// Задайте значения для каждой строки.
@@ -49,6 +47,9 @@ public class DbAdapter {
 	myDatabase.insert(DATABASE_TABLE, null, newValues);
 	}
 
+	public void delOldValues(int history){		
+	myDatabase.delete(DATABASE_TABLE, " _ID < (SELECT MAX(_ID)  FROM "+DATABASE_TABLE+")-"+history, null);
+	}
 	public List<ResultP> getValues(int length) {
 		// Возвращает все строки для первого и третьего столбца, без повторений
 		String[] result_columns = new String[] {"_id","_time", "pressure"};
@@ -60,7 +61,7 @@ public class DbAdapter {
 				int id = allRows.getInt(0);
 				Long tt = allRows.getLong(1);
 				int p = allRows.getInt(2);
-				Log.i(DbAdapter.class.getName(), "readed "+id+" "+tt+" "+p);				
+				Log.d(DbAdapter.class.getName(), "readed "+id+" "+tt+" "+p);				
 				l.add(new ResultP(id, new Date(tt), p, 0));
 			} while(allRows.moveToNext());
 			}

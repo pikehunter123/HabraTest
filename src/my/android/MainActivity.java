@@ -50,11 +50,11 @@ public class MainActivity extends Activity {
 	            	// объект RemoteViews для каждого из них
 	            	for (int i = 0; i < N; i++) {
 	            	int appWidgetId = appWidgetIds[i];
-	            		Log.i(MainActivity.class.getName(), "viget process i="+i+" id="+appWidgetId);	            	
+	            		Log.d(MainActivity.class.getName(), "viget process i="+i+" id="+appWidgetId);	            	
 	            	// Создайте новый объект RemoveViews
 	            	RemoteViews views = new RemoteViews(getApplicationContext().getPackageName(),
 	            	R.layout.pressure_widget);
-	            	Log.i(MainActivity.class.getName(), "views.getLayoutId()="+views.getLayoutId());
+	            	Log.d(MainActivity.class.getName(), "views.getLayoutId()="+views.getLayoutId());
 	            	views.setTextViewText(R.id.widget_text, "hohohoq");
 	            	// TODO Обновлять пользовательский интерфейс виджета с помощью
 	            	// объекта views.
@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
 	            	appWidgetManager.updateAppWidget(appWidgetId, views);
 	            	}
 	            	*/
-	            	Log.i(MainActivity.class.getName(), "------refrbutton click");
+	            	Log.d(MainActivity.class.getName(), "------refrbutton click");
 	            	getApplicationContext().sendBroadcast(new Intent("com.paad.chapter9.FORCE_WIDGET_UPDATE"));
 	             //   RefreshTemper();
 	            }
@@ -73,7 +73,7 @@ public class MainActivity extends Activity {
 	        buttonSta.setOnClickListener(new Button.OnClickListener() {
 	            public void onClick(View v) // клик на кнопку
 	            {
-	              Log.i(MainActivity.class.getName(), "started");
+	              Log.d(MainActivity.class.getName(), "started");
 	                ComponentName service = startService(new Intent(getApplicationContext(),PressureUpdateService.class));
 	            }
 	        });
@@ -82,7 +82,7 @@ public class MainActivity extends Activity {
 	        buttonSto.setOnClickListener(new Button.OnClickListener() {
 	            public void onClick(View v) // клик на кнопку
 	            {
-	              Log.i(MainActivity.class.getName(), "stop");
+	              Log.d(MainActivity.class.getName(), "stop");
 	              stopService(new Intent(getApplicationContext(), PressureUpdateService.class));
 	                
 	            }

@@ -11,7 +11,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.IBinder;
@@ -54,28 +56,28 @@ public class PressureUpdateService extends Service {
 			db = new DbAdapter();
 			db.createDatabase(ctx);
 		}
-		Log.i(PressureUpdateService.class.getName(),
+		Log.d(PressureUpdateService.class.getName(),
 				"*****************************onStartCommand timer tik tak ");
 
 		doRefresh = new TimerTask() {
 			public void run() {
-				Log.i(PressureUpdateService.class.getName(), "timer tik tak "
+				Log.d(PressureUpdateService.class.getName(), "timer tik tak "
 						+ (i++));
 				newPressure();
 			}
 		};
-		// Получите Общие настройки
-		/*
-		 * SharedPreferences prefs =
-		 * getSharedPreferences(Preferences.USER_PREFERENCE
-		 * ,Activity.MODE_PRIVATE);
-		 */
+
+		SharedPreferences mySharedPreferences = getSharedPreferences(
+				"MY_PREFS", Activity.MODE_PRIVATE);
+		int periodmin = mySharedPreferences.getInt("period", 120);
 
 		if (updateTimer == null)
 			try {
-				Log.i(PressureUpdateService.class.getName(), "***create task");
+				Log.d(PressureUpdateService.class.getName(),
+						"***create task with period " + periodmin + "min");
 				updateTimer = new Timer("earthquakeUpdates");
-				updateTimer.scheduleAtFixedRate(doRefresh, 0, 1 * 5 * 1000);
+				updateTimer.scheduleAtFixedRate(doRefresh, 0,
+						60 * periodmin * 1000);
 			} catch (Exception e) {
 			}
 		// else
@@ -96,116 +98,191 @@ public class PressureUpdateService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		Log.i(PressureUpdateService.class.getName(), "onDestroy");
+		Log.d(PressureUpdateService.class.getName(), "onDestroy");
 		if (updateTimer != null) {
 			doRefresh.cancel();
 			updateTimer.purge();
 			updateTimer.cancel();
-			Log.i(PressureUpdateService.class.getName(), "timer cancel");
+			Log.d(PressureUpdateService.class.getName(), "timer cancel");
 			updateTimer = null;
 		}
 	}
 
 	public void returnPressure(Integer p) {
-		String s="";
-		Log.i(PressureUpdateService.class.getName(), "returnPressure  p=" + p);
-		db.insValue(p);
-		List<ResultP> ll = db.getValues(10);
-		Date d1=new Date(),d2= new Date();
-		int j=0;
-		for (ResultP r : ll) {
-			j++;
-			if (j==1)d1=r.getDate();
-			if (j==ll.size())d2=r.getDate();
-			Log.i(PressureUpdateService.class.getName(), "rr " + r.getDate()+ " " + r.getPress());
-			s=r.getDate().toString();			
-		}
-		SimpleDateFormat sdf = new SimpleDateFormat("dd HH:mm:ss");
+		try {
+			SharedPreferences mySharedPreferences = getSharedPreferences(
+					"MY_PREFS", Activity.MODE_PRIVATE);
+			int length = mySharedPreferences.getInt("historylength", 50);
 
-		// Получите экземпляр AppWidgetManager.
-		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(ctx);
-		// Получите идентификаторы каждого экземпляра выбранного виджета.
-		ComponentName thisWidget = new ComponentName(ctx, MyAppWidget.class);
-		int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-		
-		for (int i = 0; i < appWidgetIds.length; i++) {
-			
-			int appWidgetId = appWidgetIds[i];
-			RemoteViews views = new RemoteViews(ctx.getPackageName(),
-					R.layout.pressure_widget);
-			views.setTextViewText(R.id.widget_text, sdf.format(d1)+"..."+sdf.format(d2));//+" P="+ll.get(ll.size()-1).getPress()+"mm");
+			String s = "";
+			Log.d(PressureUpdateService.class.getName(), "returnPressure  p="
+					+ p);
+			db.insValue(p);
+			db.delOldValues(2 * length);
+			List<ResultP> ll = db.getValues(length);
+			Date d1 = new Date(), d2 = new Date();
+			int j = 0;
+			for (ResultP r : ll) {
+				j++;
+				if (j == 1)
+					d1 = r.getDate();
+				if (j == ll.size())
+					d2 = r.getDate();
+				Log.d(PressureUpdateService.class.getName(),
+						"rr " + r.getDate() + " " + r.getPress());
+				s = r.getDate().toString();
+			}
+			SimpleDateFormat sdf = new SimpleDateFormat("dd HH:mm:ss");
 
-			// Конвертируем Drawable в Bitmap
-			Bitmap mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pattern);
-			/*Drawable dr = getResources().getDrawable(R.drawable.applogo);
-			int h = dr.getIntrinsicHeight();
-			int w = dr.getIntrinsicWidth();
-			Log.i(PressureUpdateService.class.getName(), "Drawable"+h+"*"+w);*/
-			///mBitmap.
-			int mPhotoWidth = mBitmap.getWidth();
-			int mPhotoHeight = mBitmap.getHeight();
-			//Log.i(PressureUpdateService.class.getName(), "bitmap"+mPhotoWidth+"*"+mPhotoHeight);
-			
-			int h=mPhotoHeight-0;
-			int w=mPhotoWidth-0;
-			Bitmap mutableBitmap = mBitmap.copy(Bitmap.Config.ARGB_8888, true);
-			Canvas canvas = new Canvas(mutableBitmap);
-			Paint paint= new Paint();
-			paint.setColor(Color.WHITE);	
-			canvas.drawRoundRect(new RectF(0,0,w,h), 2, 2, paint);
-			paint.setColor(Color.BLACK);
-			h=h-1;
-			w=w-0;
-			float y2=0;
-			float x1=0;
-			float x2=0;
-			float y1=0;
-			int pBottom=700;
-			int pUp=790;
-			int textSize=12;
-			for (j=0;j<ll.size()-1;j++) {				
-				int p1 = ll.get(j).getPress();
-				int p2 = ll.get(j+1).getPress();
-				x1=(j)*w/(ll.size()-1);
-				x2=(j+1)*w/(ll.size()-1);
-				y1=(float) (h-1.0*h/(pUp-pBottom)*(p1-pBottom));
-				y2=(float) (h-1.0*h/(pUp-pBottom)*(p2-pBottom));
-				//Log.i(PressureUpdateService.class.getName(), "drow x1"+x1+" y1"+y1);
-				canvas.drawLine(x1, y1, x2, y2, paint);
-			}	
-			paint.setColor(Color.BLACK);
-			paint.setTextSize(textSize);
-			int p1 = ll.get(0).getPress();
-			int p2 = ll.get(ll.size()-1).getPress();
-			y1=(float) (h-1.0*h/(pUp-pBottom)*(p1-pBottom));
-			y2=(float) (h-1.0*h/(pUp-pBottom)*(p2-pBottom));
-			canvas.drawText(""+Integer.toString(p1),1, y1-textSize, paint);
-			canvas.drawText(""+Integer.toString(p2),w-25, y2-textSize,  paint);
-			
-			 p1=pBottom;
-			 p2=pUp;
-			y1=(float) (h-1.0*h/(pUp-pBottom)*(p1-pBottom));
-			y2=(float) (h-1.0*h/(pUp-pBottom)*(p2-pBottom));
-			/*Log.i(PressureUpdateService.class.getName(), "***(pUp-pBottom)="+(pUp-pBottom));
-			Log.i(PressureUpdateService.class.getName(), "***(p2-pBottom)="+(p2-pBottom));
-			Log.i(PressureUpdateService.class.getName(), "***1.0/(pUp-pBottom)*(p2-pBottom)="+(1.0/(pUp-pBottom)*(p2-pBottom)));
-			*/
-			//paint.getStyle().setStyle(style);
-			paint.setColor(Color.BLUE);				
-			canvas.drawLine(w-10, y1, w, y1, paint);
-			//Log.i(PressureUpdateService.class.getName(), "drow green x1"+w+" y1"+y1);			
-			//Log.i(PressureUpdateService.class.getName(), "drow blue x1"+w+" y2"+y2);			
-			canvas.drawLine(w-10, y2, w, y2, paint);
-						
-			views.setImageViewBitmap(R.id.widget_image, mutableBitmap);
-			appWidgetManager.updateAppWidget(appWidgetId, views);
+			// Получите экземпляр AppWidgetManager.
+			AppWidgetManager appWidgetManager = AppWidgetManager
+					.getInstance(ctx);
+			// Получите идентификаторы каждого экземпляра выбранного виджета.
+			ComponentName thisWidget = new ComponentName(ctx, MyAppWidget.class);
+			int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+			if (appWidgetIds.length == 0)
+				stopSelf();
+			for (int i = 0; i < appWidgetIds.length; i++) {
+
+				int appWidgetId = appWidgetIds[i];
+				RemoteViews views = new RemoteViews(ctx.getPackageName(),
+						R.layout.pressure_widget);
+				views.setTextViewText(R.id.widget_text, sdf.format(d1) + "..."
+						+ sdf.format(d2));// +" P="+ll.get(ll.size()-1).getPress()+"mm");
+
+				// Конвертируем Drawable в Bitmap
+				Bitmap mBitmap = BitmapFactory.decodeResource(getResources(),
+						R.drawable.pattern);
+				/*
+				 * Drawable dr = getResources().getDrawable(R.drawable.applogo);
+				 * int h = dr.getIntrinsicHeight(); int w =
+				 * dr.getIntrinsicWidth();
+				 * Log.d(PressureUpdateService.class.getName(),
+				 * "Drawable"+h+"*"+w);
+				 */
+				// /mBitmap.
+				int mPhotoWidth = mBitmap.getWidth();
+				int mPhotoHeight = mBitmap.getHeight();
+				//Log.i(PressureUpdateService.class.getName(), "bitmap"
+						//+ mPhotoWidth + "*" + mPhotoHeight);
+
+				int h = mPhotoHeight - 0;
+				int w = mPhotoWidth - 0;
+				Bitmap mutableBitmap = mBitmap.copy(Bitmap.Config.ARGB_8888,
+						true);
+				Canvas canvas = new Canvas(mutableBitmap);				
+				Paint paint = new Paint();
+				Paint paintd = new Paint();
+
+				paint.setColor(Color.argb(200, 0, 0, 0));
+				canvas.drawRoundRect(new RectF(0, 0, w, h), 3, 3, paint);
+				paint.setColor(Color.argb(100, 0, 0, 0));
+				canvas.drawRoundRect(new RectF(0, 0, w - 3, -3), 4, 4, paint);
+
+				h = h - 4;
+				w = w - 4;
+				float y2 = 0;
+				float x1 = 0;
+				float x2 = 0;
+				float y1 = 0;
+				int pBottom = 700;
+				int pUp = 790;
+				int textSize = 12;
+				paintd.setColor(Color.argb(100, 0, 100, 0));
+				paintd.setStyle(Style.STROKE);
+				paintd.setPathEffect(new DashPathEffect(new float[] { 2, 2 }, 0));
+			//	Log.i(PressureUpdateService.class.getName(), "drow lines");
+				for (int k = pBottom; k <= pUp; k = k + 10) {
+					// Log.i(PressureUpdateService.class.getName(),
+					// "drow line "+k);
+					y1 = (float) (h - 1.0 * h / (pUp - pBottom) * (k - pBottom));
+					canvas.drawLine(0, y1, w, y1, paintd);
+				}
+				//Log.i(PressureUpdateService.class.getName(), "drowed lines");
+
+				paint.setColor(Color.GREEN);
+				// paint.setStyle(Style.FILL);
+				// paint.setPathEffect(null);
+				Log.i(PressureUpdateService.class.getName(), "drow values");
+float prex=-100;
+				for (j = 0; j < ll.size() - 1; j++) {
+					int p1 = ll.get(j).getPress();
+					int p2 = ll.get(j + 1).getPress();
+					x1 = (j) * w / (ll.size() - 1);
+					x2 = (j + 1) * w / (ll.size() - 1);
+					y1 = (float) (h - 1.0 * h / (pUp - pBottom)
+							* (p1 - pBottom));
+					y2 = (float) (h - 1.0 * h / (pUp - pBottom)
+							* (p2 - pBottom));
+					// Log.d(PressureUpdateService.class.getName(),
+					// "drow x1"+x1+" y1"+y1);
+					if (x1>prex+9) canvas.drawLine(x1, 0, x1, h, paintd);
+					prex=x1;
+					if (j == ll.size() - 2) canvas.drawLine(x2, 0, x2, h, paintd);
+					if (p1==0 ||p2==0) continue;
+					canvas.drawLine(x1, y1, x2, y2, paint);
+				}
+
+				// paint.setColor(Color.GREEN);
+				paint.setTextSize(textSize);
+				int p1 = ll.get(0).getPress();
+				int p2 = ll.get(ll.size() - 1).getPress();
+				y1 = (float) (h - 1.0 * h / (pUp - pBottom) * (p1 - pBottom));
+				y2 = (float) (h - 1.0 * h / (pUp - pBottom) * (p2 - pBottom));
+				canvas.drawText("" + Integer.toString(p1), 2, y1 - textSize,
+						paint);
+				canvas.drawText("" + Integer.toString(p2), w - 21, y2
+						- textSize, paint);
+				if (p2 == 0)
+					paint.setColor(Color.RED);
+				else
+					paint.setColor(Color.GREEN);
+				canvas.drawCircle(10, 10, 5, paint);
+
+				/*
+				 * p1=pBottom; p2=pUp; y1=(float)
+				 * (h-1.0*h/(pUp-pBottom)*(p1-pBottom)); y2=(float)
+				 * (h-1.0*h/(pUp-pBottom)*(p2-pBottom));
+				 */
+				/*
+				 * Log.d(PressureUpdateService.class.getName(),
+				 * "***(pUp-pBottom)="+(pUp-pBottom));
+				 * Log.d(PressureUpdateService.class.getName(),
+				 * "***(p2-pBottom)="+(p2-pBottom));
+				 * Log.d(PressureUpdateService.class.getName(),
+				 * "***1.0/(pUp-pBottom)*(p2-pBottom)="
+				 * +(1.0/(pUp-pBottom)*(p2-pBottom)));
+				 */
+				// paint.getStyle().setStyle(style);
+
+				// canvas.drawLine(0, y1, 0, y1, paint);
+				// Log.d(PressureUpdateService.class.getName(),
+				// "drow green x1"+w+" y1"+y1);
+				// Log.d(PressureUpdateService.class.getName(),
+				// "drow blue x1"+w+" y2"+y2);
+				// canvas.drawLine(0, y2, 10, y2, paint);
+
+				views.setImageViewBitmap(R.id.widget_image, mutableBitmap);
+				appWidgetManager.updateAppWidget(appWidgetId, views);
+			}
+		} catch (Throwable e) {
+			e.printStackTrace();
+			Log.e(PressureUpdateService.class.getName(), "Throwable", e);
+
 		}
 	}
 
 	private void newPressure() {
+		// final TextView tTemper = null;// (TextView)
+		// findViewById(R.id.temper);
+		SharedPreferences mySharedPreferences = getSharedPreferences(
+				"MY_PREFS", Activity.MODE_PRIVATE);
+		String url = mySharedPreferences.getString("url",
+				"https://pogoda.yandex.ru/moscow/");
+		Log.d(PressureUpdateService.class.getName(), "get pressure from url "
+				+ url);
 
-		final TextView tTemper = null;// (TextView) findViewById(R.id.temper);
-		new DownloadImageTask(this).execute("https://pogoda.yandex.ru/moscow/");
+		new DownloadImageTask(this).execute(url);
 	}
 
 }

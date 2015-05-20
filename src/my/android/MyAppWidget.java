@@ -15,7 +15,7 @@ public class MyAppWidget extends AppWidgetProvider {
 	public void onReceive(Context context, Intent intent) {
 	/*super.onReceive(context, intent);
 	if (FORCE_WIDGET_UPDATE.equals(intent.getAction())) {
-		Log.i(MyAppWidget.class.getName(), " **********************update by receive call ");
+		Log.d(MyAppWidget.class.getName(), " **********************update by receive call ");
 		// Получите экземпляр AppWidgetManager.
 		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 		// Получите идентификаторы каждого экземпляра выбранного виджета.
@@ -31,7 +31,7 @@ AppWidgetManager appWidgetManager,
 int[] appWidgetIds) {
 
 	
-	Log.i(MyAppWidget.class.getName(), " **********************update call ");
+	Log.d(MyAppWidget.class.getName(), " **********************update call ");
 /*	final int N = appWidgetIds.length;
 	for (int i = 0; i < N; i++) {
 	int appWidgetId = appWidgetIds[i];
