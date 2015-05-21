@@ -163,14 +163,14 @@ public class PressureUpdateService extends Service {
 				// /mBitmap.
 				int mPhotoWidth = mBitmap.getWidth();
 				int mPhotoHeight = mBitmap.getHeight();
-				//Log.i(PressureUpdateService.class.getName(), "bitmap"
-						//+ mPhotoWidth + "*" + mPhotoHeight);
+				// Log.i(PressureUpdateService.class.getName(), "bitmap"
+				// + mPhotoWidth + "*" + mPhotoHeight);
 
 				int h = mPhotoHeight - 0;
 				int w = mPhotoWidth - 0;
 				Bitmap mutableBitmap = mBitmap.copy(Bitmap.Config.ARGB_8888,
 						true);
-				Canvas canvas = new Canvas(mutableBitmap);				
+				Canvas canvas = new Canvas(mutableBitmap);
 				Paint paint = new Paint();
 				Paint paintd = new Paint();
 
@@ -191,20 +191,20 @@ public class PressureUpdateService extends Service {
 				paintd.setColor(Color.argb(100, 0, 100, 0));
 				paintd.setStyle(Style.STROKE);
 				paintd.setPathEffect(new DashPathEffect(new float[] { 2, 2 }, 0));
-			//	Log.i(PressureUpdateService.class.getName(), "drow lines");
+				// Log.i(PressureUpdateService.class.getName(), "drow lines");
 				for (int k = pBottom; k <= pUp; k = k + 10) {
 					// Log.i(PressureUpdateService.class.getName(),
 					// "drow line "+k);
 					y1 = (float) (h - 1.0 * h / (pUp - pBottom) * (k - pBottom));
 					canvas.drawLine(0, y1, w, y1, paintd);
 				}
-				//Log.i(PressureUpdateService.class.getName(), "drowed lines");
+				// Log.i(PressureUpdateService.class.getName(), "drowed lines");
 
 				paint.setColor(Color.GREEN);
 				// paint.setStyle(Style.FILL);
 				// paint.setPathEffect(null);
 				Log.i(PressureUpdateService.class.getName(), "drow values");
-float prex=-100;
+				float prex = -100;
 				for (j = 0; j < ll.size() - 1; j++) {
 					int p1 = ll.get(j).getPress();
 					int p2 = ll.get(j + 1).getPress();
@@ -216,10 +216,14 @@ float prex=-100;
 							* (p2 - pBottom));
 					// Log.d(PressureUpdateService.class.getName(),
 					// "drow x1"+x1+" y1"+y1);
-					if (x1>prex+9) canvas.drawLine(x1, 0, x1, h, paintd);
-					prex=x1;
-					if (j == ll.size() - 2) canvas.drawLine(x2, 0, x2, h, paintd);
-					if (p1==0 ||p2==0) continue;
+					if (x1 > prex + 9) {
+						canvas.drawLine(x1, 0, x1, h, paintd);
+						prex = x1;
+					}
+					/*if (j == ll.size() - 2)
+						canvas.drawLine(x2, 0, x2, h, paintd);*/
+					if (p1 == 0 || p2 == 0)
+						continue;
 					canvas.drawLine(x1, y1, x2, y2, paint);
 				}
 
