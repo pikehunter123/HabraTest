@@ -3,7 +3,7 @@
 xmlns:android="http://schemas.android.com/apk/res/android"
 android:initialLayout="@layout/pressure_widget"
 android:minWidth="288dp"
-android:minHeight="62dp"
+android:minHeight="124dp"
 android:label="PressureWidget"
 android:updatePeriodMillis="0"
 android:configure="my.android.MyWidgetConfigurationActivity"

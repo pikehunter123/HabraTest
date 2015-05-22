@@ -171,6 +171,7 @@ public class PressureUpdateService extends Service {
 				Bitmap mutableBitmap = mBitmap.copy(Bitmap.Config.ARGB_8888,
 						true);
 				Canvas canvas = new Canvas(mutableBitmap);
+				
 				Paint paint = new Paint();
 				Paint paintd = new Paint();
 
@@ -185,9 +186,9 @@ public class PressureUpdateService extends Service {
 				float x1 = 0;
 				float x2 = 0;
 				float y1 = 0;
-				int pBottom = 700;
-				int pUp = 790;
-				int textSize = 12;
+				int pBottom = mySharedPreferences.getInt("pressuremin", 700);
+				int pUp = mySharedPreferences.getInt("pressuremax", 790);
+				int textSize = 10;
 				paintd.setColor(Color.argb(100, 0, 100, 0));
 				paintd.setStyle(Style.STROKE);
 				paintd.setPathEffect(new DashPathEffect(new float[] { 2, 2 }, 0));
@@ -233,10 +234,12 @@ public class PressureUpdateService extends Service {
 				int p2 = ll.get(ll.size() - 1).getPress();
 				y1 = (float) (h - 1.0 * h / (pUp - pBottom) * (p1 - pBottom));
 				y2 = (float) (h - 1.0 * h / (pUp - pBottom) * (p2 - pBottom));
-				canvas.drawText("" + Integer.toString(p1), 2, y1 - textSize,
+				canvas.drawText("" + Integer.toString(p1), 2, y1 - textSize/2,
 						paint);
-				canvas.drawText("" + Integer.toString(p2), w - 21, y2
+				canvas.drawText("" + Integer.toString(p2), w - 20, y2
 						- textSize, paint);
+				canvas.drawText("" + Integer.toString(pUp), w-20, 5+ textSize/2,paint);
+				canvas.drawText("" + Integer.toString(pBottom), w-20, h - textSize/2,paint);
 				if (p2 == 0)
 					paint.setColor(Color.RED);
 				else
@@ -267,6 +270,7 @@ public class PressureUpdateService extends Service {
 				// canvas.drawLine(0, y2, 10, y2, paint);
 
 				views.setImageViewBitmap(R.id.widget_image, mutableBitmap);
+				
 				appWidgetManager.updateAppWidget(appWidgetId, views);
 			}
 		} catch (Throwable e) {
@@ -283,8 +287,10 @@ public class PressureUpdateService extends Service {
 				"MY_PREFS", Activity.MODE_PRIVATE);
 		String url = mySharedPreferences.getString("url",
 				"https://pogoda.yandex.ru/moscow/");
-		Log.d(PressureUpdateService.class.getName(), "get pressure from url "
-				+ url);
+		String pressureRegular = mySharedPreferences.getString("pressureregular",
+				"zzz");
+		Log.i(PressureUpdateService.class.getName(), "get pressure from url:"
+				+ url+" regular expression:"+pressureRegular);
 
 		new DownloadImageTask(this).execute(url);
 	}

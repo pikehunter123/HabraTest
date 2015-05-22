@@ -23,7 +23,12 @@ public class MyWidgetConfigurationActivity extends Activity {
 			{
 				EditText period=(EditText) findViewById(R.id.period);
 				EditText history=(EditText) findViewById(R.id.historylength);
+				EditText pressmin=(EditText) findViewById(R.id.pressuremin);
+				EditText pressmax=(EditText) findViewById(R.id.pressuremax);
+				
 				EditText url=(EditText) findViewById(R.id.url);
+				EditText pressureregular=(EditText) findViewById(R.id.pressureregular);
+				
 				// Получите объект настроек.
 				int mode = Activity.MODE_PRIVATE;
 				SharedPreferences mySharedPreferences = getSharedPreferences("MY_PREFS",mode);
@@ -36,7 +41,10 @@ public class MyWidgetConfigurationActivity extends Activity {
 				Log.d(MyWidgetConfigurationActivity.class.getName(), "settings put url"+url.getText().toString());
 				editor.putInt("period", Integer.parseInt(period.getText().toString()));
 				editor.putInt("historylength", Integer.parseInt(history.getText().toString()));
+				editor.putInt("pressuremin", Integer.parseInt(pressmin.getText().toString()));
+				editor.putInt("pressuremax", Integer.parseInt(pressmax.getText().toString()));
 				editor.putString("url", url.getText().toString());
+				editor.putString("pressureregular", pressureregular.getText().toString());
 				// Сохраните изменения.
 				editor.commit();				
 				
