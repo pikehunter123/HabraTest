@@ -24,7 +24,9 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -174,6 +176,7 @@ public class PressureUpdateService extends Service {
 				
 				Paint paint = new Paint();
 				Paint paintd = new Paint();
+				Paint paintdred = new Paint();
 
 				paint.setColor(Color.argb(200, 0, 0, 0));
 				canvas.drawRoundRect(new RectF(0, 0, w, h), 3, 3, paint);
@@ -192,6 +195,10 @@ public class PressureUpdateService extends Service {
 				paintd.setColor(Color.argb(100, 0, 100, 0));
 				paintd.setStyle(Style.STROKE);
 				paintd.setPathEffect(new DashPathEffect(new float[] { 2, 2 }, 0));
+				paintdred.setColor(Color.argb(100, 150, 0, 0));
+				paintdred.setStyle(Style.STROKE);
+				paintdred.setPathEffect(new DashPathEffect(new float[] { 2, 2 }, 0));
+				
 				// Log.i(PressureUpdateService.class.getName(), "drow lines");
 				for (int k = pBottom; k <= pUp; k = k + 10) {
 					// Log.i(PressureUpdateService.class.getName(),
@@ -206,6 +213,7 @@ public class PressureUpdateService extends Service {
 				// paint.setPathEffect(null);
 				Log.i(PressureUpdateService.class.getName(), "drow values");
 				float prex = -100;
+				int dweek=-1;
 				for (j = 0; j < ll.size() - 1; j++) {
 					int p1 = ll.get(j).getPress();
 					int p2 = ll.get(j + 1).getPress();
@@ -218,7 +226,12 @@ public class PressureUpdateService extends Service {
 					// Log.d(PressureUpdateService.class.getName(),
 					// "drow x1"+x1+" y1"+y1);
 					if (x1 > prex + 9) {
-						canvas.drawLine(x1, 0, x1, h, paintd);
+						GregorianCalendar ca = new GregorianCalendar();
+						ca.setTime(ll.get(j).getDate());
+						int dayOfWeek=ca.get(Calendar.DAY_OF_WEEK);
+						if (dweek==dayOfWeek) canvas.drawLine(x1, 0, x1, h, paintd);
+										 else canvas.drawLine(x1, 0, x1, h, paintdred);
+						dweek=dayOfWeek;
 						prex = x1;
 					}
 					/*if (j == ll.size() - 2)
