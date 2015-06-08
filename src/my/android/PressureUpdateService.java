@@ -192,10 +192,10 @@ public class PressureUpdateService extends Service {
 				int pBottom = mySharedPreferences.getInt("pressuremin", 700);
 				int pUp = mySharedPreferences.getInt("pressuremax", 790);
 				int textSize = 10;
-				paintd.setColor(Color.argb(100, 0, 100, 0));
+				paintd.setColor(Color.argb(150, 0, 100, 0));
 				paintd.setStyle(Style.STROKE);
 				paintd.setPathEffect(new DashPathEffect(new float[] { 2, 2 }, 0));
-				paintdred.setColor(Color.argb(100, 150, 0, 0));
+				paintdred.setColor(Color.argb(200, 150, 0, 0));
 				paintdred.setStyle(Style.STROKE);
 				paintdred.setPathEffect(new DashPathEffect(new float[] { 2, 2 }, 0));
 				
