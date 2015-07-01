@@ -28,6 +28,7 @@ public class WebDataReciver {
 	public static Point getWeather(String urlsite) // фукция загрузки
 													// температуры
 	{
+		//Log.i(WebDataReciver.class.getName(), "*******getWeather************");
 		Point ret= new Point(0, 0);
 		Integer matchtemper = null;
 		
@@ -51,13 +52,14 @@ public class WebDataReciver {
 			}
 			
 			// работаем с регулярками
-			//System.out.println("---"+allpage.toString());
-			//String patt_temp = "<div\\s+class=\"current-weather__thermometer current-weather__thermometer_type_now\"\\s*>[^&]{1,}";
+			//Log.i(WebDataReciver.class.getName(), "zzzzz---"+allpage.toString());
+			/*//String patt_temp = "<div\\s+class=\"current-weather__thermometer current-weather__thermometer_type_now\"\\s*>[^&]{1,}";
 			String patt_temp = "current-weather__condition-icon\"\\s+data-width=\"46\"></i>[^&]{1,}";
 			//<i class="icon icon_size_46 icon_thumb_skc-n current-weather__condition-icon" data-width="46"></i>
 			String stemp = tryMatch(allpage, patt_temp);
 			stemp=stemp.split(">", 3)[2].replace("+", "");
-			if (stemp!=null) matchtemper = Integer.parseInt(stemp);
+			if (stemp!=null)
+			*/ matchtemper = 0;//Integer.parseInt(stemp);
 			///System.out.println("t---" + matchtemper);
 			
 			String patt_press = "Давление:\\s+[^<]{1,}";
@@ -89,7 +91,7 @@ public class WebDataReciver {
 			return ret;
 		} catch (Exception e) {
 			e.printStackTrace();
-			Log.e("Error", e.getMessage());
+			Log.e("Error parsing response", e.getMessage());
 			
 
 		}
